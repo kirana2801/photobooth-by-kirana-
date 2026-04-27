@@ -1,4 +1,4 @@
-
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -21,6 +21,7 @@ body{
     radial-gradient(circle at 20% 20%, #ffd6eb, transparent),
     radial-gradient(circle at 80% 80%, #ffc1e3, transparent),
     #fff0f6;
+    padding:10px;
 }
 
 /* BACK */
@@ -28,42 +29,40 @@ body{
     position:absolute;
     top:15px;
     left:15px;
-    background:rgba(255,255,255,0.7);
+    background:white;
     padding:8px 15px;
     border-radius:50px;
     text-decoration:none;
     color:#ff4081;
-    font-size:14px;
+    font-size:13px;
 }
 
 /* LAYOUT */
 .main{
     display:flex;
-    gap:25px;
+    gap:20px;
     width:100%;
-    max-width:1000px;
+    max-width:900px;
 }
 
 /* CAMERA */
 .container{
     flex:1;
-    padding:20px;
-    background:rgba(255,255,255,0.6);
-    backdrop-filter:blur(20px);
-    border-radius:25px;
+    padding:15px;
+    background:rgba(255,255,255,0.7);
+    backdrop-filter:blur(15px);
+    border-radius:20px;
     text-align:center;
 }
 
 .camera-box{
     width:100%;
-    max-width:500px;
-    height:280px;
-    margin:auto;
-    border-radius:20px;
+    height:260px;
+    border-radius:15px;
     overflow:hidden;
     position:relative;
     background:#000;
-    margin-bottom:15px;
+    margin-bottom:10px;
 }
 
 video{
@@ -80,22 +79,10 @@ video{
     pointer-events:none;
 }
 
-/* TIMER */
-#countdown{
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    font-size:60px;
-    color:white;
-    display:none;
-    font-family:'Dancing Script';
-}
-
 /* BUTTON */
 .btn{
     width:100%;
-    max-width:230px;
+    max-width:220px;
     padding:10px;
     border:none;
     border-radius:30px;
@@ -111,17 +98,15 @@ video{
     display:flex;
     gap:10px;
     justify-content:center;
-    flex-wrap:wrap;
 }
 
 .template{
-    width:55px;
-    height:55px;
+    width:50px;
+    height:50px;
     border-radius:50%;
     overflow:hidden;
     border:2px solid white;
     cursor:pointer;
-    transition:0.3s;
 }
 
 .template img{
@@ -132,14 +117,13 @@ video{
 
 .template.active{
     border-color:#ff4081;
-    transform:scale(1.1);
 }
 
 /* PREVIEW */
 .preview{
-    width:170px;
+    width:150px;
     padding:10px;
-    background:rgba(255,255,255,0.6);
+    background:rgba(255,255,255,0.7);
     border-radius:20px;
     display:flex;
     flex-direction:column;
@@ -152,7 +136,7 @@ video{
 
 .frame img{
     width:100%;
-    height:85px;
+    height:80px;
     border-radius:10px;
     object-fit:cover;
 }
@@ -165,40 +149,37 @@ video{
     background:#ff4081;
     color:white;
     font-size:12px;
-    padding:5px;
+    padding:4px;
     border-radius:50%;
-    opacity:0;
-    transition:0.2s;
-    cursor:pointer;
+    display:none;
 }
 
 /* hover desktop */
 .frame:hover .delete-btn{
-    opacity:1;
+    display:block;
 }
 
-/* tap mobile */
+/* klik hp */
 .frame.active .delete-btn{
-    opacity:1;
+    display:block;
 }
 
-/* 📱 MOBILE */
+/* 📱 MOBILE FIX */
 @media(max-width:768px){
-
-    body{
-        padding:10px;
-        align-items:flex-start;
-    }
 
     .main{
         flex-direction:column;
-        gap:15px;
+        align-items:center;
     }
 
     .preview{
-        flex-direction:row;
         width:100%;
+        flex-direction:row;
         justify-content:center;
+    }
+
+    .frame{
+        flex:1;
     }
 
     .frame img{
@@ -224,7 +205,6 @@ video{
     <div class="camera-box">
         <video id="video" autoplay playsinline></video>
         <img id="frame-overlay">
-        <div id="countdown">3</div>
     </div>
 
     <button class="btn" onclick="capture()">Capture 📷</button>
@@ -250,57 +230,27 @@ video{
 
 </div>
 
-<canvas id="canvas" width="500" height="280" style="display:none;"></canvas>
+<canvas id="canvas" width="500" height="260" style="display:none;"></canvas>
 
 <script>
-const video = document.getElementById('video');
-const canvas = document.getElementById('canvas');
-const frameOverlay = document.getElementById('frame-overlay');
-
-let frame="";
+const video=document.getElementById('video');
+const canvas=document.getElementById('canvas');
 let photos=[];
+let frame="";
 
 /* CAMERA */
 navigator.mediaDevices.getUserMedia({video:true})
-.then(stream=>{
-    video.srcObject=stream;
-})
-.catch(()=>alert("Izinkan kamera ya!"));
+.then(stream=>video.srcObject=stream);
 
 /* TEMPLATE */
 function setFrame(src,el){
     frame=src;
-    frameOverlay.src=src;
     document.querySelectorAll('.template').forEach(t=>t.classList.remove('active'));
     el.classList.add('active');
 }
 
-/* TIMER */
+/* CAPTURE */
 function capture(){
-    let count=3;
-    const cd=document.getElementById('countdown');
-    cd.style.display="block";
-    cd.innerText=count;
-
-    const interval=setInterval(()=>{
-        count--;
-        if(count>0){
-            cd.innerText=count;
-        }else{
-            clearInterval(interval);
-            cd.style.display="none";
-            takePhoto();
-        }
-    },1000);
-}
-
-/* TAKE PHOTO */
-function takePhoto(){
-    if(video.readyState < 2){
-        alert("Kamera belum siap!");
-        return;
-    }
-
     const ctx=canvas.getContext('2d');
 
     ctx.save();
@@ -309,14 +259,7 @@ function takePhoto(){
     ctx.drawImage(video,0,0,canvas.width,canvas.height);
     ctx.restore();
 
-    if(frame){
-        const img=new Image();
-        img.src=frame;
-        img.onload=()=>{
-            ctx.drawImage(img,0,0,canvas.width,canvas.height);
-            save();
-        }
-    }else save();
+    save();
 }
 
 /* SAVE */
@@ -324,34 +267,31 @@ function save(){
     const data=canvas.toDataURL();
     photos.unshift(data);
     if(photos.length>3) photos.pop();
-    updatePreview();
+    update();
 }
 
 /* UPDATE */
-function updatePreview(){
-    const imgs=["p1","p2","p3"];
-    imgs.forEach((id,i)=>{
-        document.getElementById(id).src=photos[i]||"";
-    });
+function update(){
+    document.getElementById('p1').src=photos[0]||"";
+    document.getElementById('p2').src=photos[1]||"";
+    document.getElementById('p3').src=photos[2]||"";
 }
 
 /* DELETE */
-document.querySelectorAll('.delete-btn').forEach((btn,index)=>{
-    btn.addEventListener('click',(e)=>{
+document.querySelectorAll('.delete-btn').forEach((btn,i)=>{
+    btn.onclick=(e)=>{
         e.stopPropagation();
-        photos.splice(index,1);
-        updatePreview();
-    });
+        photos.splice(i,1);
+        update();
+    }
 });
 
-/* TAP MOBILE */
+/* TAP HP */
 document.querySelectorAll('.frame').forEach(frame=>{
-    frame.addEventListener('click',()=>{
-        frame.classList.toggle('active');
-    });
+    frame.onclick=()=>frame.classList.toggle('active');
 });
 </script>
 
 </body>
 </html>
-
+```
