@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Your Layout - 100 Templates ✨</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #fce4ec;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Tombol Kembali Melayang */
+        .back-home {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            background: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            color: #ff4081;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: 0.3s;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-home:hover {
+            background: #ff4081;
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        /* Background Glow & Bintang */
+        .container {
+            width: 100%;
+            height: 100vh;
+            background: radial-gradient(circle, #f48fb1 0%, #fce4ec 70%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: twinkle var(--duration) infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
+        }
+
+        h2 { font-size: 2.5rem; color: #111; margin-bottom: 5px; font-weight: 400; text-transform: lowercase; }
+        p.subtitle { font-size: 14px; color: #555; margin-bottom: 40px; }
+
+        /* --- WRAPPER UNTUK GESER KE SAMPING --- */
+        .layout-wrapper {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            max-width: 1300px;
+            padding: 0 50px;
+            position: relative;
+        }
+
+        .layout-grid {
+            display: flex;
+            gap: 25px;
+            overflow-x: auto;
+            padding: 40px 20px;
+            scroll-behavior: smooth;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+        }
+
+        .layout-grid::-webkit-scrollbar { display: none; }
+
+        /* Card Template */
+        .layout-card {
+            background: white;
+            padding: 12px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: 0.3s;
+            cursor: pointer;
+            min-width: 200px;
+            scroll-snap-align: center;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .layout-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 20px 40px rgba(244, 143, 177, 0.4);
+        }
+
+        .badge {
+            position: absolute;
+            top: -10px;
+            right: -5px;
+            background: #ff4081;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: bold;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        }
+
+        .layout-image {
+            width: 100%;
+            height: 380px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            object-fit: cover;
+            background: #f9f9f9;
+        }
+
+        .layout-info h4 { font-size: 14px; color: #111; margin-bottom: 3px; }
+        .layout-info p { font-size: 11px; color: #888; }
+
+        /* Tombol Navigasi */
+        .nav-btn {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            border: 1px solid #eee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: 0.3s;
+        }
+
+        .nav-btn:hover { background: #ff4081; color: white; border-color: #ff4081; }
+        .btn-left { left: 10px; }
+        .btn-right { right: 10px; }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="back-home">❮ back to home</a>
+
+    <div class="container" id="container">
+        <h2>choose your layout</h2>
+        <p class="subtitle">Select from our collection of photo booth layouts</p>
+
+        <div class="layout-wrapper">
+            <button class="nav-btn btn-left" onclick="scrollGrid(-300)">❮</button>
+
+            <div class="layout-grid" id="layout-grid">
+                </div>
+
+            <button class="nav-btn btn-right" onclick="scrollGrid(300)">❯</button>
+        </div>
+    </div>
+
+    <script>
+        const grid = document.getElementById('layout-grid');
+        const container = document.getElementById('container');
+
+        // 1. GENERATE 100 TEMPLATES OTOMATIS
+        for (let i = 1; i <= 100; i++) {
+            const imgFile = i % 2 === 0 ? 'pinkblue2.JPG' : 'pinkblue.JPG';
+            const badgeText = i % 5 === 0 ? 'NEW LAYOUT' : 'TRY IT NOW';
+            
+            // Onclick diarahkan ke index.html untuk memulai foto
+            const card = `
+                <div class="layout-card" onclick="window.location.href='halamanfoto.html'">
+                    <span class="badge">${badgeText}</span>
+                    <img src="${imgFile}" class="layout-image" alt="Layout ${i}">
+                    <div class="layout-info">
+                        <h4>layout ${String.fromCharCode(64 + (i % 26) || 90)} ${i}</h4>
+                        <p>Size 6 x 2 Strip<br>(4 Pose)</p>
+                    </div>
+                </div>
+            `;
+            grid.innerHTML += card;
+        }
+
+        // 2. ANIMASI BINTANG
+        for (let i = 0; i < 50; i++) {
+            let star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            let size = Math.random() * 3 + 2;
+            star.style.width = size + 'px';
+            star.style.height = size + 'px';
+            star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+            container.appendChild(star);
+        }
+
+        // 3. FUNGSI SCROLL TOMBOL
+        function scrollGrid(distance) {
+            grid.scrollBy({ left: distance, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
