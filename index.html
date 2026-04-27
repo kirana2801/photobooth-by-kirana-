@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photobooth Aesthetic ✨</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #fce4ec;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .main-card {
+            position: relative;
+            width: 95%;
+            height: 90vh;
+            background: radial-gradient(circle, #f48fb1 0%, #fce4ec 80%);
+            border-radius: 50px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: twinkle var(--duration) infinite ease-in-out;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
+        }
+
+        .section {
+            display: none;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            padding: 40px;
+        }
+
+        #home-page { display: flex; }
+
+        /* 🔥 TEKS WELCOME */
+        .welcome-text {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 48px;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .start-btn {
+            background: #ff4081; color: white; padding: 15px 45px;
+            border: none; border-radius: 50px; font-weight: 600; cursor: pointer;
+        }
+
+        /* 🔥 FOTO MENGAMBANG */
+        .photo-float {
+            position: absolute;
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 140px;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .photo-float img {
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        .left-photo {
+            left: 5%;
+            top: 25%;
+            transform: rotate(-8deg);
+        }
+
+        .right-photo {
+            right: 5%;
+            bottom: 20%;
+            transform: rotate(8deg);
+        }
+
+        @keyframes float {
+            0%,100% { transform: translateY(0) rotate(var(--rot)); }
+            50% { transform: translateY(-15px) rotate(var(--rot)); }
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="main-card" id="card">
+    
+    <section class="section" id="home-page">
+
+        <!-- 🔥 TEKS TAMBAHAN -->
+        <div class="welcome-text">Welcome to Photobooth ✨</div>
+
+        <button class="start-btn" onclick="goTemplate()">START 📷</button>
+
+        <!-- 🔥 FOTO KIRI -->
+        <div class="photo-float left-photo" style="--rot:-8deg;">
+            <img src="pinkblue.JPG">
+        </div>
+
+        <!-- 🔥 FOTO KANAN -->
+        <div class="photo-float right-photo" style="--rot:8deg;">
+            <img src="pinkblue2.JPG">
+        </div>
+
+    </section>
+
+    <section class="section" id="camera-page">
+        <div class="booth-container">
+            <video id="video" autoplay playsinline></video>
+            <img id="photo-result" src="">
+        </div>
+
+        <div class="camera-controls">
+            <button id="snap-btn">Foto</button>
+            <button id="reset-btn" style="display:none;">Ulang</button>
+        </div>
+
+    </section>
+
+</div>
+
+<canvas id="canvas" style="display:none;"></canvas>
+
+<script>
+const card = document.getElementById('card');
+for (let i = 0; i < 60; i++) {
+    let star = document.createElement('div');
+    star.className = 'star';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    let size = Math.random() * 4 + 2;
+    star.style.width = size + 'px'; 
+    star.style.height = size + 'px';
+    star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+    card.appendChild(star);
+}
+
+function goTemplate() {
+    window.location.href = "template.html";
+}
+
+// kamera tetap
+let stream = null;
+const video = document.getElementById('video');
+const photoResult = document.getElementById('photo-result');
+const snapBtn = document.getElementById('snap-btn');
+const resetBtn = document.getElementById('reset-btn');
+
+snapBtn.onclick = () => {
+    const canvas = document.getElementById('canvas');
+    canvas.width = video.videoWidth; 
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+    
+    ctx.translate(canvas.width, 0); 
+    ctx.scale(-1, 1);
+    ctx.drawImage(video, 0, 0);
+    
+    photoResult.src = canvas.toDataURL('image/png');
+    photoResult.style.display = 'block';
+    video.style.display = 'none';
+};
+
+resetBtn.onclick = () => {
+    photoResult.style.display = 'none';
+    video.style.display = 'block';
+};
+</script>
+
+</body>
+</html>
