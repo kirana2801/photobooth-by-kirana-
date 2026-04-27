@@ -13,11 +13,10 @@
 
 body{
     font-family:'Poppins',sans-serif;
-    height:100vh;
+    min-height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
-    overflow:hidden;
     background:
     radial-gradient(circle at 20% 20%, #ffd6eb, transparent),
     radial-gradient(circle at 80% 80%, #ffc1e3, transparent),
@@ -27,41 +26,44 @@ body{
 /* BACK */
 .back-home{
     position:absolute;
-    top:30px;
-    left:30px;
+    top:15px;
+    left:15px;
     background:rgba(255,255,255,0.7);
-    backdrop-filter:blur(10px);
-    padding:10px 20px;
+    padding:8px 15px;
     border-radius:50px;
     text-decoration:none;
     color:#ff4081;
+    font-size:14px;
 }
 
 /* LAYOUT */
 .main{
     display:flex;
-    gap:30px;
-    align-items:center;
+    gap:25px;
+    width:100%;
+    max-width:1000px;
 }
 
 /* CAMERA */
 .container{
-    padding:30px;
+    flex:1;
+    padding:20px;
     background:rgba(255,255,255,0.6);
     backdrop-filter:blur(20px);
-    border-radius:30px;
-    box-shadow:0 20px 50px rgba(255,182,193,0.3);
+    border-radius:25px;
     text-align:center;
 }
 
 .camera-box{
-    width:500px;
-    height:380px;
+    width:100%;
+    max-width:500px;
+    height:280px;
+    margin:auto;
     border-radius:20px;
     overflow:hidden;
     position:relative;
     background:#000;
-    margin-bottom:20px;
+    margin-bottom:15px;
 }
 
 video{
@@ -78,64 +80,66 @@ video{
     pointer-events:none;
 }
 
-/* COUNTDOWN */
+/* TIMER */
 #countdown{
     position:absolute;
     top:50%;
     left:50%;
     transform:translate(-50%,-50%);
-    font-size:100px;
+    font-size:60px;
     color:white;
     display:none;
-    z-index:10;
     font-family:'Dancing Script';
-    text-shadow:0 0 20px pink;
 }
 
 /* BUTTON */
 .btn{
-    background:white;
+    width:100%;
+    max-width:230px;
+    padding:10px;
     border:none;
-    padding:10px 40px;
     border-radius:30px;
     font-family:'Dancing Script';
-    font-size:25px;
+    font-size:22px;
+    background:white;
     cursor:pointer;
 }
 
 /* TEMPLATE */
 .templates{
-    margin-top:15px;
+    margin-top:10px;
     display:flex;
     gap:10px;
     justify-content:center;
+    flex-wrap:wrap;
 }
 
 .template{
     width:55px;
     height:55px;
     border-radius:50%;
+    overflow:hidden;
     border:2px solid white;
     cursor:pointer;
-    background-size:cover;
-    background-position:center;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    transition:0.3s;
 }
 
-.template.active{border-color:#ff4081;}
+.template img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
 
-.no-frame{
-    background: linear-gradient(135deg, #fff, #ffe4ec);
+.template.active{
+    border-color:#ff4081;
+    transform:scale(1.1);
 }
 
 /* PREVIEW */
 .preview{
-    width:180px;
-    padding:15px;
+    width:170px;
+    padding:10px;
     background:rgba(255,255,255,0.6);
-    backdrop-filter:blur(20px);
     border-radius:20px;
     display:flex;
     flex-direction:column;
@@ -144,17 +148,16 @@ video{
 
 .frame{
     position:relative;
-    transition:0.3s;
 }
 
 .frame img{
     width:100%;
-    height:100px;
+    height:85px;
     border-radius:10px;
     object-fit:cover;
 }
 
-/* DELETE BUTTON */
+/* DELETE */
 .delete-btn{
     position:absolute;
     top:5px;
@@ -162,24 +165,49 @@ video{
     background:#ff4081;
     color:white;
     font-size:12px;
-    padding:5px 8px;
+    padding:5px;
     border-radius:50%;
     opacity:0;
-    transform:scale(0.6);
-    transition:0.25s ease;
+    transition:0.2s;
     cursor:pointer;
 }
 
-/* DESKTOP HOVER */
+/* hover desktop */
 .frame:hover .delete-btn{
     opacity:1;
-    transform:scale(1);
 }
 
-/* MOBILE TAP */
+/* tap mobile */
 .frame.active .delete-btn{
     opacity:1;
-    transform:scale(1);
+}
+
+/* 📱 MOBILE */
+@media(max-width:768px){
+
+    body{
+        padding:10px;
+        align-items:flex-start;
+    }
+
+    .main{
+        flex-direction:column;
+        gap:15px;
+    }
+
+    .preview{
+        flex-direction:row;
+        width:100%;
+        justify-content:center;
+    }
+
+    .frame img{
+        height:70px;
+    }
+
+    .camera-box{
+        height:220px;
+    }
 }
 </style>
 </head>
@@ -194,7 +222,7 @@ video{
     <h2 style="font-family:'Dancing Script'">Ready to Smile? ✨</h2>
 
     <div class="camera-box">
-        <video id="video" autoplay></video>
+        <video id="video" autoplay playsinline></video>
         <img id="frame-overlay">
         <div id="countdown">3</div>
     </div>
@@ -202,51 +230,55 @@ video{
     <button class="btn" onclick="capture()">Capture 📷</button>
 
     <div class="templates">
-        <div class="template no-frame active" onclick="setFrame('',this)">✨</div>
-        <div class="template" style="background-image:url('frame1.png')" onclick="setFrame('frame1.png',this)"></div>
-        <div class="template" style="background-image:url('frame2.png')" onclick="setFrame('frame2.png',this)"></div>
-        <div class="template" style="background-image:url('frame3.png')" onclick="setFrame('frame3.png',this)"></div>
+        <div class="template active" onclick="setFrame('',this)">
+            <img src="pinkblue.jpg">
+        </div>
+        <div class="template" onclick="setFrame('frame1.png',this)">
+            <img src="frame1.png">
+        </div>
+        <div class="template" onclick="setFrame('frame2.png',this)">
+            <img src="frame2.png">
+        </div>
     </div>
 </div>
 
 <div class="preview">
-    <div class="frame" data-index="0"><img id="p1"><span class="delete-btn">✕</span></div>
-    <div class="frame" data-index="1"><img id="p2"><span class="delete-btn">✕</span></div>
-    <div class="frame" data-index="2"><img id="p3"><span class="delete-btn">✕</span></div>
+    <div class="frame"><img id="p1"><span class="delete-btn">✕</span></div>
+    <div class="frame"><img id="p2"><span class="delete-btn">✕</span></div>
+    <div class="frame"><img id="p3"><span class="delete-btn">✕</span></div>
 </div>
 
 </div>
 
-<canvas id="canvas" width="500" height="380" style="display:none;"></canvas>
+<canvas id="canvas" width="500" height="280" style="display:none;"></canvas>
 
 <script>
 const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
 const frameOverlay = document.getElementById('frame-overlay');
 
-let frame = "";
-let photos = [];
+let frame="";
+let photos=[];
 
 /* CAMERA */
 navigator.mediaDevices.getUserMedia({video:true})
-.then(stream => {
-    video.srcObject = stream;
-    video.onloadedmetadata = () => video.play();
+.then(stream=>{
+    video.srcObject=stream;
 })
-.catch(err => alert("Izinkan kamera ya!") );
+.catch(()=>alert("Izinkan kamera ya!"));
 
 /* TEMPLATE */
 function setFrame(src,el){
-    frame = src;
-    frameOverlay.src = src;
+    frame=src;
+    frameOverlay.src=src;
     document.querySelectorAll('.template').forEach(t=>t.classList.remove('active'));
     el.classList.add('active');
 }
 
 /* TIMER */
 function capture(){
-    let count = 3;
-    const cd = document.getElementById('countdown');
+    let count=3;
+    const cd=document.getElementById('countdown');
     cd.style.display="block";
     cd.innerText=count;
 
@@ -264,9 +296,12 @@ function capture(){
 
 /* TAKE PHOTO */
 function takePhoto(){
-    if(video.readyState < 2) return alert("Kamera belum siap!");
+    if(video.readyState < 2){
+        alert("Kamera belum siap!");
+        return;
+    }
 
-    const ctx = canvas.getContext('2d');
+    const ctx=canvas.getContext('2d');
 
     ctx.save();
     ctx.translate(canvas.width,0);
@@ -279,104 +314,44 @@ function takePhoto(){
         img.src=frame;
         img.onload=()=>{
             ctx.drawImage(img,0,0,canvas.width,canvas.height);
-            savePreview();
+            save();
         }
-    }else savePreview();
+    }else save();
 }
 
 /* SAVE */
-function savePreview(){
+function save(){
     const data=canvas.toDataURL();
     photos.unshift(data);
     if(photos.length>3) photos.pop();
     updatePreview();
 }
 
-/* UPDATE PREVIEW */
+/* UPDATE */
 function updatePreview(){
-    const frames = document.querySelectorAll('.frame');
-
-    frames.forEach((frameEl, i) => {
-        const img = frameEl.querySelector('img');
-        img.src = photos[i] || "";
-        frameEl.dataset.index = i;
-
-        frameEl.style.transform = "translateX(0)";
-        frameEl.style.opacity = 1;
-        frameEl.classList.remove('active');
+    const imgs=["p1","p2","p3"];
+    imgs.forEach((id,i)=>{
+        document.getElementById(id).src=photos[i]||"";
     });
 }
 
-/* DELETE CLICK */
-document.querySelectorAll('.delete-btn').forEach(btn=>{
+/* DELETE */
+document.querySelectorAll('.delete-btn').forEach((btn,index)=>{
     btn.addEventListener('click',(e)=>{
         e.stopPropagation();
-        const frameEl = btn.parentElement;
-        const index = parseInt(frameEl.dataset.index);
-
-        if(!isNaN(index)){
-            photos.splice(index,1);
-            updatePreview();
-        }
+        photos.splice(index,1);
+        updatePreview();
     });
 });
 
-/* TAP (MOBILE) */
-document.querySelectorAll('.frame').forEach(frameEl=>{
-    frameEl.addEventListener('click', ()=>{
-        frameEl.classList.toggle('active');
+/* TAP MOBILE */
+document.querySelectorAll('.frame').forEach(frame=>{
+    frame.addEventListener('click',()=>{
+        frame.classList.toggle('active');
     });
-});
-
-/* SWIPE DELETE */
-document.querySelectorAll('.frame').forEach(frameEl=>{
-    let startX=0,currentX=0,isDrag=false;
-
-    function start(e){
-        isDrag=true;
-        startX=e.touches?e.touches[0].clientX:e.clientX;
-        frameEl.style.transition="none";
-    }
-
-    function move(e){
-        if(!isDrag) return;
-        currentX=e.touches?e.touches[0].clientX:e.clientX;
-        let diff=currentX-startX;
-        frameEl.style.transform=`translateX(${diff}px)`;
-        frameEl.style.opacity=1-Math.abs(diff)/150;
-    }
-
-    function end(){
-        if(!isDrag) return;
-        isDrag=false;
-        let diff=currentX-startX;
-
-        if(Math.abs(diff)>80){
-            const index=parseInt(frameEl.dataset.index);
-            frameEl.style.transition="0.3s";
-            frameEl.style.transform=`translateX(${diff>0?300:-300}px)`;
-            frameEl.style.opacity=0;
-
-            setTimeout(()=>{
-                photos.splice(index,1);
-                updatePreview();
-            },200);
-        }else{
-            frameEl.style.transition="0.3s";
-            frameEl.style.transform="translateX(0)";
-            frameEl.style.opacity=1;
-        }
-    }
-
-    frameEl.addEventListener('mousedown',start);
-    frameEl.addEventListener('touchstart',start);
-    frameEl.addEventListener('mousemove',move);
-    frameEl.addEventListener('touchmove',move);
-    frameEl.addEventListener('mouseup',end);
-    frameEl.addEventListener('mouseleave',end);
-    frameEl.addEventListener('touchend',end);
 });
 </script>
 
 </body>
 </html>
+
